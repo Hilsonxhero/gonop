@@ -28,6 +28,7 @@
     <div class="list-group">
 
         <a href="/users/login" class="list-group-item list-group-item-action">Login a User</a>
+            <a href="/form" class="list-group-item list-group-item-action">Form Validation</a>
     </div>
 </div>
 

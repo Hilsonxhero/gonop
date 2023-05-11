@@ -17,6 +17,9 @@ func (a *application) routes() *chi.Mux {
 	a.App.Routes.Post("/users/login", a.Handlers.PostUserLogin)
 	a.App.Routes.Get("/users/logout", a.Handlers.Logout)
 
+	a.App.Routes.Get("/form", a.Handlers.Form)
+	a.App.Routes.Post("/form", a.Handlers.PostForm)
+
 	a.App.Routes.Get("/create-user", func(w http.ResponseWriter, r *http.Request) {
 		u := data.User{
 			FirstName: "Trevor",
@@ -67,6 +70,15 @@ func (a *application) routes() *chi.Mux {
 		}
 
 		u.LastName = a.App.RandomString(10)
+
+		validator := a.App.Validator(nil)
+		validator.Check(len(u.LastName) > 20, "last_name", "Last name must be 20 characters or more")
+
+		if !validator.Valid() {
+			fmt.Fprint(w, "failed validation")
+			return
+		}
+
 		err = u.Update(*u)
 		if err != nil {
 			a.App.ErrorLog.Println(err)
