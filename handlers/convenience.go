@@ -3,6 +3,8 @@ package handlers
 import (
 	"context"
 	"net/http"
+
+	"github.com/hilsonxhero/napoleon"
 )
 
 func (h *Handlers) render(w http.ResponseWriter, r *http.Request, tmpl string, variables, data interface{}) error {
@@ -35,4 +37,24 @@ func (h *Handlers) sessionDestroy(ctx context.Context) error {
 
 func (h *Handlers) randomString(n int) string {
 	return h.App.RandomString(n)
+}
+
+func (h *Handlers) encrypt(text string) (string, error) {
+	enc := napoleon.Encryption{Key: []byte(h.App.EncryptionKey)}
+
+	encrypted, err := enc.Encrypt(text)
+	if err != nil {
+		return "", err
+	}
+	return encrypted, nil
+}
+
+func (h *Handlers) decrypt(crypto string) (string, error) {
+	enc := napoleon.Encryption{Key: []byte(h.App.EncryptionKey)}
+
+	encrypted, err := enc.Decrypt(crypto)
+	if err != nil {
+		return "", err
+	}
+	return encrypted, nil
 }
